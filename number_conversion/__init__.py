@@ -1,1 +1,1 @@
-from main.py import *
+from .main import *
