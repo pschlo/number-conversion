@@ -1,5 +1,7 @@
 # number-conversion
 
+*Note: When developing, type checking should be set to `strict`!*
+
 ## Examples
 
 ### Example customization 1:
