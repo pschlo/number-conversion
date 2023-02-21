@@ -2,6 +2,15 @@
 
 *Note: When developing, type checking should be set to `strict`!*
 
+## Installation
+The
+[GitHub API](https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#download-a-repository-archive-tar)
+allows to fetch a repository as a `tar` archive. `pip` can install from archived source distributions, so the install command is:
+```
+python -m pip install https://api.github.com/repos/pschlo/number-conversion/tarball
+```
+
+
 ## Examples
 
 ### Example customization 1:
