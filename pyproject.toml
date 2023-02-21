@@ -11,9 +11,3 @@ authors = [
 description = "A small example package"
 readme = "README.md"
 requires-python = ">=3.7"
-
-[tool.hatch.build]
-include = [
-  "**/*.py",
-  "py.typed"
-]
