@@ -8,15 +8,19 @@ The
 [GitHub API](https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#download-a-repository-archive-tar)
 allows to fetch a repository as a `tar` archive. The
 [source archive](https://packaging.python.org/en/latest/glossary/#term-Source-Archive) 
-can thus be downloaded from `https://api.github.com/repos/pschlo/number-conversion/tarball`.
+can thereby be downloaded from
+```
+https://api.github.com/repos/pschlo/number-conversion/tarball/{REF}
+```
+where `REF` is a branch, commit or tag name (e.g. `v0.0.3` or `main`).
 
 A
 [source distribution](https://packaging.python.org/en/latest/glossary/#term-Source-Distribution-or-sdist)
 or
 [built distribution](https://packaging.python.org/en/latest/glossary/#term-Built-Distribution)
-can then be created manually, e.g. with [`build`](https://pypa-build.readthedocs.io) from PyPA. [`pip`](https://pip.pypa.io) automatically builds from the source archive, so the install command is:
+can then be created manually, e.g. with [`build`](https://pypa-build.readthedocs.io) from PyPA. [`pip`](https://pip.pypa.io), however, can automatically build from source archives. For example, the install command for the latest version is:
 ```
-$ python -m pip install https://api.github.com/repos/pschlo/number-conversion/tarball
+$ python -m pip install https://api.github.com/repos/pschlo/number-conversion/tarball/main
 ```
 
 ## Examples
