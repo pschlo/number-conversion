@@ -8,10 +8,7 @@ The
 [GitHub API](https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#download-a-repository-archive-tar)
 allows to fetch a repository as a `tar` archive. The
 [source archive](https://packaging.python.org/en/latest/glossary/#term-Source-Archive) 
-can thus be downloaded from:
-```
-https://api.github.com/repos/pschlo/number-conversion/tarball
-```
+can thus be downloaded from `https://api.github.com/repos/pschlo/number-conversion/tarball`.
 
 A
 [source distribution](https://packaging.python.org/en/latest/glossary/#term-Source-Distribution-or-sdist)
