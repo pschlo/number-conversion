@@ -2,6 +2,7 @@ import string
 from enum import Enum, EnumMeta
 from collections.abc import Sequence
 # from typing import Any, NewType
+#
 
 
 """
