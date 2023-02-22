@@ -18,9 +18,9 @@ A
 [source distribution](https://packaging.python.org/en/latest/glossary/#term-Source-Distribution-or-sdist)
 or
 [built distribution](https://packaging.python.org/en/latest/glossary/#term-Built-Distribution)
-can then be created manually, e.g. with [`build`](https://pypa-build.readthedocs.io) from PyPA. [`pip`](https://pip.pypa.io), however, can automatically build from source archives. For example, the install command for the latest version is:
+can then be created manually, e.g. with [`build`](https://pypa-build.readthedocs.io) from PyPA. `pip`, however, can automatically build from source archives. It is also good style to prepend a [direct reference](https://peps.python.org/pep-0440/#direct-references). For example, the install command for the latest release of version 0.3 is:
 ```
-$ python -m pip install https://api.github.com/repos/pschlo/number-conversion/tarball/main
+$ python -m pip install number-conversion@https://api.github.com/repos/pschlo/number-conversion/tarball/v0.3.x
 ```
 
 ## Examples
