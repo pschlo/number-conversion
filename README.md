@@ -6,7 +6,7 @@
 
 This package is not currently uploaded to PyPI. Install as follows:
 
-1. Find your release of choice
+1. Find your release of choice [here](https://github.com/pschlo/number-conversion/releases)
 2. Copy the link to `number_conversion-x.x.x.tar.gz`
 3. `python -m pip install {link}`
 
