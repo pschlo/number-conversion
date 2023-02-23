@@ -3,7 +3,6 @@
 *Note: When developing, type checking should be set to `strict`!*
 
 ## Installation
-
 This package is not currently uploaded to PyPI. Install as follows:
 
 1. Find your release of choice [here](https://github.com/pschlo/number-conversion/releases)
@@ -15,7 +14,7 @@ You may also prepend a [direct reference](https://peps.python.org/pep-0440/#dire
 
 ## Building
 The `.tar.gz` file in a release is the
-[source distribution](https://packaging.python.org/en/latest/glossary/#term-Source-Distribution-or-sdist), which was created from the source code by running `python3 -m build --sdist`.
+[source distribution](https://packaging.python.org/en/latest/glossary/#term-Source-Distribution-or-sdist), which was created from the source code with `python3 -m build --sdist`.
 [Built distributions](https://packaging.python.org/en/latest/glossary/#term-Built-Distribution)
 are not provided.
 
