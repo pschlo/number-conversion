@@ -8,7 +8,7 @@ This package is not currently uploaded to PyPI. Install as follows:
 
 1. Find your release of choice [here](https://github.com/pschlo/number-conversion/releases)
 2. Copy the link to `number_conversion-x.x.x.tar.gz`
-3. `python -m pip install {link}`
+3. Run `python -m pip install {link}`
 
 You may also prepend a [direct reference](https://peps.python.org/pep-0440/#direct-references), which might be desirable for a `requirements.txt`.
 
