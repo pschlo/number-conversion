@@ -4,10 +4,17 @@ build-backend = "hatchling.build"
 
 [project]
 name = "number-conversion"
-version = "0.0.3"
+version = "1.0.1"
 authors = [
   { name="pschlo", email="author@example.com" },
 ]
 description = "A small example package"
 readme = "README.md"
 requires-python = ">=3.7"
+
+
+[tool.hatch.build.targets.sdist]
+# choose here what to include in sdist
+# the wheel will only include src/number_conversion anyway
+# see https://discuss.python.org/t/should-sdists-include-docs-and-tests/14578
+# include = [ ]

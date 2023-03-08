@@ -3,21 +3,21 @@
 *Note: When developing, type checking should be set to `strict`!*
 
 ## Installation
+This package is not currently uploaded to PyPI. Install as follows:
 
-The
-[GitHub API](https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#download-a-repository-archive-tar)
-allows to fetch a repository as a `tar` archive. The
-[source archive](https://packaging.python.org/en/latest/glossary/#term-Source-Archive) 
-can thus be downloaded from `https://api.github.com/repos/pschlo/number-conversion/tarball`.
+1. Find your release of choice [here](https://github.com/pschlo/number-conversion/releases)
+2. Copy the link to `number_conversion-x.x.x.tar.gz`
+3. Run `python -m pip install {link}`
 
-A
-[source distribution](https://packaging.python.org/en/latest/glossary/#term-Source-Distribution-or-sdist)
-or
-[built distribution](https://packaging.python.org/en/latest/glossary/#term-Built-Distribution)
-can then be created manually, e.g. with [`build`](https://pypa-build.readthedocs.io) from PyPA. [`pip`](https://pip.pypa.io) automatically builds from the source archive, so the install command is:
-```
-$ python -m pip install https://api.github.com/repos/pschlo/number-conversion/tarball
-```
+You may also prepend a [direct reference](https://peps.python.org/pep-0440/#direct-references), which might be desirable for a `requirements.txt`.
+
+
+## Building
+The `.tar.gz` file in a release is the
+[source distribution](https://packaging.python.org/en/latest/glossary/#term-Source-Distribution-or-sdist), which was created from the source code with `python3 -m build --sdist`.
+[Built distributions](https://packaging.python.org/en/latest/glossary/#term-Built-Distribution)
+are not provided.
+
 
 ## Examples
 
