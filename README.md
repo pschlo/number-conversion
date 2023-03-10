@@ -36,15 +36,19 @@ class BracketGroups:
     ANY = DigitsGroup(BracketDigits.ROUND, BracketDigits.SQUARE)
 
 # number to numeral conversion
-print(number_to_numeral(42, 10, BracketDigits.ROUND))
-print(number_to_numeral(42, 10, BracketDigits.SQUARE))
-print(number_to_numeral(42, 10, BracketGroups.ANY))  # raises error
+to_numeral(42, 10, BracketDigits.ROUND)   # (2
+to_numeral(42, 10, BracketDigits.SQUARE)  # [2
+# to_numeral(42, 10, BracketGroups.ANY)   # raises error
 
 # numeral to number conversion
-print(numeral_to_number("123(5", 10, BracketGroups.ANY))
-print(numeral_to_number("123[5", 10, BracketGroups.ANY))
-print(numeral_to_number("123[5", 10, BracketDigits.SQUARE))
-print(numeral_to_number("123[5", 10, BracketDigits.ROUND))  # raises error
+from_numeral("123(5", 10, BracketGroups.ANY)      # 12345
+from_numeral("123[5", 10, BracketGroups.ANY)      # 12345
+from_numeral("123[5", 10, BracketDigits.SQUARE)   # 12345
+# from_numeral("123[5", 10, BracketDigits.ROUND)  # raises error
+
+# numeral to numeral conversion
+convert_digits('1(2', BracketGroups.ANY, BracketDigits.SQUARE)  # 1[2
+convert_base('1110', 2, 10, to_digits=BracketDigits.ROUND)      # 1(
 ```
 
 ### Example customization 2:
@@ -55,6 +59,6 @@ print(numeral_to_number("123[5", 10, BracketDigits.ROUND))  # raises error
 # i.e. no digit may be the prefix of another digit
 weird_digits = Digits(['X0X', 'X1X1X1', 'X2X', 'Y3', 'aa4', '55'])
 
-print(number_to_numeral(14, 10))
-print(numeral_to_number("Y355", 10, weird_digits))
+to_numeral(14, 10)  # 14
+from_numeral("Y355", 10, weird_digits)  # 35
 ```
