@@ -151,9 +151,15 @@ def number_to_numeral(number:int, base:int, digits:Digits=ALNUM_LOWER) -> str:
     digitvals = number_to_digitvals(number, base)
     return digitvals_to_numeral(digitvals, digits)
 
-def numeral_to_numeral(numeral:str, from_base:int, to_base:int, from_digits:Digits|DigitsGroup=ALNUM_ANY, to_digits:Digits=ALNUM_LOWER) -> str:
+def convert_base(numeral:str, from_base:int, to_base:int, from_digits:Digits|DigitsGroup=ALNUM_ANY, to_digits:Digits=ALNUM_LOWER) -> str:
     number = numeral_to_number(numeral, from_base, from_digits)
     return number_to_numeral(number, to_base, to_digits)
+
+def convert_digits(numeral:str, from_digits:Digits|DigitsGroup=ALNUM_ANY, to_digits:Digits=ALNUM_LOWER) -> str:
+    digitvals = numeral_to_digitvals(numeral, from_digits)
+    return digitvals_to_numeral(digitvals, to_digits)
+
+
 
 
 
