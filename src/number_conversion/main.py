@@ -155,6 +155,7 @@ def detect_base(numeral:str) -> int:
     return matching_bases[0]
 
 # removes prefix if there is any
+# base can be provided if already known
 def remove_prefix(numeral:str, base:int=0) -> str:
     if not base:
         base = detect_base(numeral)
