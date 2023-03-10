@@ -2,7 +2,6 @@ import string
 from collections.abc import Sequence
 
 
-
 """
 DEFINITIONS
 
@@ -37,12 +36,17 @@ class Digits:
     digits: set[str]
     val2digit: tuple[str]
     digit2val: dict[str,int]
+    max_digit_len: int = 0
 
     # either list of digits or one big string
     def __init__(self, digits:str|list[str]) -> None:
+        if not len(digits) > 0: raise ValueError("Cannot create empty digit list")
         self.digits = set(digits)
         self.val2digit = tuple(digits)
-        self.digit2val = {digit: val for val, digit in enumerate(digits)}
+        self.digit2val = dict()
+        for val, digit in enumerate(digits):
+            self.digit2val[digit] = val
+            self.max_digit_len = max(self.max_digit_len, len(digit))
 
     def value(self, digit: str) -> int:
         return self.digit2val[digit]
@@ -55,13 +59,17 @@ class Digits:
 class DigitsGroup:
     digits: set[str]
     digit2val: dict[str,int]
+    max_digit_len: int = 0
 
     def __init__(self, *digits:Digits) -> None:
+        if not len(digits) > 0: raise ValueError("Cannot create empty digits group")
         self.digits = set()
         self.digit2val = dict()
         for d in digits:
             self.digits.update(d.digits)
             self.digit2val.update(d.digit2val)
+            self.max_digit_len = max(self.max_digit_len, d.max_digit_len)
+        
 
     def value(self, digit: str) -> int:
         return self.digit2val[digit]
@@ -88,8 +96,6 @@ def number_to_digitvals(number:int, base:int) -> tuple[int]:
     return tuple(reversed(digitvals))
 
 
-
-# takes 'digits' to reference preset digit lists
 def digitvals_to_numeral(digitvals:Sequence[int], digits:Digits=ALNUM_LOWER) -> str:
     if not len(digitvals) > 0: raise ValueError("Cannot convert empty digit value sequence")
 
@@ -103,21 +109,21 @@ def digitvals_to_numeral(digitvals:Sequence[int], digits:Digits=ALNUM_LOWER) -> 
 
 ## numeral to number, i.e. str to int
 
-# numeral may not have a base prefix
+# numeral must not have a base prefix
 def numeral_to_digitvals(numeral:str, digits_group:Digits|DigitsGroup=ALNUM_ANY) -> tuple[int]:
     if not len(numeral) > 0: raise ValueError("Cannot convert empty numeral")
 
     digitvals: list[int] = []
     # this is done so that a digit could also be multiple chars wide
-    # this loop could be optimized by avoiding new string creation at every loop iteration
     while len(numeral) > 0:
-        # get all digits that are prefix of numeral
-        prefix_digits = [digit for digit in digits_group.digits if numeral.startswith(digit)]
-        if len(prefix_digits) == 0:
-            raise ValueError(f"Cannot identify digit at beginning of subnumeral '{numeral}'")
-        elif len(prefix_digits) > 1:
-            raise ValueError(f"Digit at beginning of subnumeral '{numeral}' is ambiguous")
-        digit = prefix_digits[0]
+        # find shortest digit prefix
+        for i in range(min(len(numeral), digits_group.max_digit_len)):
+            digit = numeral[:i+1]
+            if digit in digits_group.digits:
+                # found digit
+                break
+        else:
+            raise ValueError(f"Cannot identify digit at beginning of subnumeral '{numeral}'. Are the digits prefix-free and is the numeral valid?")
         digitvals.append(digits_group.value(digit))
         numeral = numeral.removeprefix(digit)
 
@@ -136,14 +142,18 @@ def digitvals_to_number(digitvals:Sequence[int], base:int) -> int:
 
 
 ## shortcut functions
-# numeral may not have a base prefix
-def numeral_to_number( numeral:str, base:int, digits_group:Digits|DigitsGroup=ALNUM_ANY) -> int:
+# numeral must not have a base prefix
+def numeral_to_number(numeral:str, base:int, digits_group:Digits|DigitsGroup=ALNUM_ANY) -> int:
     digitvals = numeral_to_digitvals(numeral, digits_group)
     return digitvals_to_number(digitvals, base)
 
 def number_to_numeral(number:int, base:int, digits:Digits=ALNUM_LOWER) -> str:
     digitvals = number_to_digitvals(number, base)
     return digitvals_to_numeral(digitvals, digits)
+
+def numeral_to_numeral(numeral:str, from_base:int, to_base:int, from_digits:Digits|DigitsGroup=ALNUM_ANY, to_digits:Digits=ALNUM_LOWER) -> str:
+    number = numeral_to_number(numeral, from_base, from_digits)
+    return number_to_numeral(number, to_base, to_digits)
 
 
 
