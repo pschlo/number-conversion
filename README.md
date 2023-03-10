@@ -27,27 +27,24 @@ are not provided.
 # define custom digits
 # same as arabic digits except that the digit 4 is replaced by a bracket
 # digits can be defined either as one big string, or as a list of digits
-class BracketDigits(BaseDigits):
-    ROUND = ['0', '1', '2', '3', '(', '5', '6', '7', '8', '9']
-    SQUARE = '0123[56789ABCDEF'
+class BracketDigits:
+    ROUND = Digits(['0', '1', '2', '3', '(', '5', '6', '7', '8', '9'])
+    SQUARE = Digits('0123[56789ABCDEF')
 
 # define digit group
-class BracketGroups(BaseGroups):
-    ANY = [BracketDigits.ROUND, BracketDigits.SQUARE]
-
-# create NumberConverter
-conv = NumberConverter(BracketDigits, BracketGroups)
+class BracketGroups:
+    ANY = DigitsGroup(BracketDigits.ROUND, BracketDigits.SQUARE)
 
 # number to numeral conversion
-print(conv.number_to_numeral(42, 10, BracketDigits.ROUND))
-print(conv.number_to_numeral(42, 10, BracketDigits.SQUARE))
-print(conv.number_to_numeral(42, 10, BracketGroups.ANY))  # raises error
+print(number_to_numeral(42, 10, BracketDigits.ROUND))
+print(number_to_numeral(42, 10, BracketDigits.SQUARE))
+print(number_to_numeral(42, 10, BracketGroups.ANY))  # raises error
 
 # numeral to number conversion
-print(conv.numeral_to_number("123(5", 10, BracketGroups.ANY))
-print(conv.numeral_to_number("123[5", 10, BracketGroups.ANY))
-print(conv.numeral_to_number("123[5", 10, BracketDigits.SQUARE))
-print(conv.numeral_to_number("123[5", 10, BracketDigits.ROUND))  # raises error
+print(numeral_to_number("123(5", 10, BracketGroups.ANY))
+print(numeral_to_number("123[5", 10, BracketGroups.ANY))
+print(numeral_to_number("123[5", 10, BracketDigits.SQUARE))
+print(numeral_to_number("123[5", 10, BracketDigits.ROUND))  # raises error
 ```
 
 ### Example customization 2:
@@ -56,12 +53,8 @@ print(conv.numeral_to_number("123[5", 10, BracketDigits.ROUND))  # raises error
 # digits can also be multiple characters wide
 # note that to unambiguously convert a numeral to a number, the digits must be prefix-free,
 # i.e. no digit may be the prefix of another digit
+weird_digits = Digits(['X0X', 'X1X1X1', 'X2X', 'Y3', 'aa4', '55'])
 
-class WeirdDigits(BaseDigits):
-    DIGITS = ['X0X', 'X1X1X1', 'X2X', 'Y3', 'aa4', '55']
-
-conv = NumberConverter(WeirdDigits, default_to_numeral=WeirdDigits.DIGITS)
-
-print(conv.number_to_numeral(14, 10))
-print(conv.numeral_to_number("Y355", 10, WeirdDigits.DIGITS))
+print(number_to_numeral(14, 10))
+print(numeral_to_number("Y355", 10, weird_digits))
 ```
