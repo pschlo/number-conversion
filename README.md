@@ -59,6 +59,6 @@ convert_base('1110', 2, 10, to_digits=BracketDigits.ROUND)      # 1(
 # i.e. no digit may be the prefix of another digit
 weird_digits = Digits(['X0X', 'X1X1X1', 'X2X', 'Y3', 'aa4', '55'])
 
-to_numeral(14, 10)  # 14
+to_numeral(14, 10, weird_digits)  # X1X1X1aa4
 from_numeral("Y355", 10, weird_digits)  # 35
 ```
