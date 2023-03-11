@@ -1,6 +1,6 @@
-import string
 from collections.abc import Sequence
-from typing import overload
+from .prefix_map import *
+from .digits import *
 
 
 """
@@ -19,96 +19,6 @@ DEFINITIONS
 - example: in the binary system, the numeral 101 represents the number five
 - example: in the decimal system, the numeral 17 represents the number seventeen
 """
-
-
-PREFIX_TO_BASE: dict[str, int] = dict()
-PREFIXES: list[str] = []  # sorted by length in descending order
-
-@overload
-def add_prefix(prefix:str, base:int, /): ...
-
-@overload
-def add_prefix(dict: dict[str,int], /): ...
-
-def add_prefix(*args:str|int|dict[str,int]):
-    if isinstance(args[0], dict):
-        _add_prefix_dict(args[0])
-    else:
-        assert isinstance(args[0], str) and isinstance(args[1], int)
-        _add_prefix_single(args[0], args[1])
-    PREFIXES.sort(key=len, reverse=True)
-
-def _add_prefix_dict(dict: dict[str,int]):
-    for prefix, base in dict.items():
-        _add_prefix_single(prefix, base)
-
-def _add_prefix_single(prefix:str, base:int):
-    if prefix in PREFIX_TO_BASE:
-        raise ValueError(f"Prefix '{prefix}' already exists")
-    PREFIXES.append(prefix)
-    PREFIX_TO_BASE[prefix] = base
-
-
-add_prefix({
-    '0b': 2,
-    '0o': 8,
-    '0x': 16,
-})
-
-
-class Digits:
-    digits: set[str]
-    digit_lengths: list[int]
-    val2digit: tuple[str]
-    digit2val: dict[str,int]
-
-    # either list of digits or one big string
-    def __init__(self, digits:str|list[str]) -> None:
-        if not len(digits) > 0: raise ValueError("Cannot create empty digit list")
-
-        self.digits = set(digits)
-        self.val2digit = tuple(digits)
-        self.digit2val = dict()
-
-        digit_lengths: set[int] = set()
-        for val, digit in enumerate(digits):
-            self.digit2val[digit] = val
-            digit_lengths.add(len(digit))
-        self.digit_lengths = list(sorted(digit_lengths))
-
-    def value(self, digit: str) -> int:
-        return self.digit2val[digit]
-
-    def digit(self, value: int) -> str:
-        return self.val2digit[value]
-
-
-# can be used when converting from numerals/digits to numbers/digitvalues
-class DigitsGroup:
-    digits: set[str]
-    digit_lengths: list[int]
-    digit2val: dict[str,int]
-
-    def __init__(self, *digits:Digits) -> None:
-        if not len(digits) > 0: raise ValueError("Cannot create empty digits group")
-
-        self.digits = set()
-        self.digit2val = dict()
-
-        digit_lengths: set[int] = set()
-        for d in digits:
-            self.digits.update(d.digits)
-            self.digit2val.update(d.digit2val)
-            digit_lengths.update(d.digit_lengths)
-        self.digit_lengths = list(sorted(digit_lengths))
-
-    def value(self, digit: str) -> int:
-        return self.digit2val[digit]
-
-
-ALNUM_LOWER = Digits(string.digits + string.ascii_lowercase)
-ALNUM_UPPER = Digits(string.digits + string.ascii_uppercase)
-ALNUM_ANY = DigitsGroup(ALNUM_LOWER, ALNUM_UPPER)
 
 
 ## from number to numeral, i.e. int to str
@@ -203,14 +113,14 @@ def convert_digits(numeral:str, from_digits:Digits|DigitsGroup=ALNUM_ANY, to_dig
 # tries to detect number system base by looking for prefix
 # if unsuccessful, base is 0
 # returns base and numeral without prefix
-def remove_prefix(numeral:str) -> tuple[str, int]:
+def remove_prefix(numeral:str, prefixes:PrefixMap=DEFAULT_PREFIXES) -> tuple[str, int]:
     # match longest prefix
     prefix = ''
-    for prefix in PREFIXES:
+    for prefix in prefixes.prefix_list:
         if numeral.startswith(prefix): break
     else:
         return numeral, 0
     
     # remove prefix
-    base = PREFIX_TO_BASE[prefix]
+    base = prefixes.prefix_to_base[prefix]
     return numeral.removeprefix(prefix), base
