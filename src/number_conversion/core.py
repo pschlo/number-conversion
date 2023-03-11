@@ -34,19 +34,23 @@ PREFIX_TO_BASE: dict[str, int] = {
 
 class Digits:
     digits: set[str]
+    digit_lengths: list[int]
     val2digit: tuple[str]
     digit2val: dict[str,int]
-    max_digit_len: int = 0
 
     # either list of digits or one big string
     def __init__(self, digits:str|list[str]) -> None:
         if not len(digits) > 0: raise ValueError("Cannot create empty digit list")
+
         self.digits = set(digits)
         self.val2digit = tuple(digits)
         self.digit2val = dict()
+
+        digit_lengths: set[int] = set()
         for val, digit in enumerate(digits):
             self.digit2val[digit] = val
-            self.max_digit_len = max(self.max_digit_len, len(digit))
+            digit_lengths.add(len(digit))
+        self.digit_lengths = list(sorted(digit_lengths))
 
     def value(self, digit: str) -> int:
         return self.digit2val[digit]
@@ -58,18 +62,21 @@ class Digits:
 # can be used when converting from numerals/digits to numbers/digitvalues
 class DigitsGroup:
     digits: set[str]
+    digit_lengths: list[int]
     digit2val: dict[str,int]
-    max_digit_len: int = 0
 
     def __init__(self, *digits:Digits) -> None:
         if not len(digits) > 0: raise ValueError("Cannot create empty digits group")
+
         self.digits = set()
         self.digit2val = dict()
+
+        digit_lengths: set[int] = set()
         for d in digits:
             self.digits.update(d.digits)
             self.digit2val.update(d.digit2val)
-            self.max_digit_len = max(self.max_digit_len, d.max_digit_len)
-        
+            digit_lengths.update(d.digit_lengths)
+        self.digit_lengths = list(sorted(digit_lengths))
 
     def value(self, digit: str) -> int:
         return self.digit2val[digit]
@@ -117,13 +124,22 @@ def numeral_to_digitvals(numeral:str, digits_group:Digits|DigitsGroup=ALNUM_ANY)
     # this is done so that a digit could also be multiple chars wide
     while len(numeral) > 0:
         # find shortest digit prefix
-        for i in range(min(len(numeral), digits_group.max_digit_len)):
-            digit = numeral[:i+1]
+        # only take possible prefixes and check if they are digits
+        # runs not more than len(digits) times, because len(digits_lengths) <= len(digits)
+        # runs not more that len(numeral) times, because every iteration i increases by at least one, and i>len(numeral) is checked
+        # NOTE: could also use sentinel digit, but inserting into list is O(n)
+
+        digit = ''
+        is_found = False
+        for i in digits_group.digit_lengths:
+            if i > len(numeral): break
+            digit = numeral[:i]
             if digit in digits_group.digits:
-                # found digit
+                is_found = True
                 break
-        else:
+        if not is_found:
             raise ValueError(f"Cannot identify digit at beginning of subnumeral '{numeral}'. Are the digits prefix-free and is the numeral valid?")
+
         digitvals.append(digits_group.value(digit))
         numeral = numeral.removeprefix(digit)
 
@@ -161,10 +177,9 @@ def convert_digits(numeral:str, from_digits:Digits|DigitsGroup=ALNUM_ANY, to_dig
 
 
 
-
-
 # tries to detect number system base by looking for prefix
 # returns base if unambiguously detected, else 0
+# TODO: maybe make faster by using same prefix detection idea as in numeral_to_digitvals?
 def detect_base(numeral:str) -> int:
     matching_bases = [base for prefix, base in PREFIX_TO_BASE.items() if numeral.startswith(prefix)]
     if not len(matching_bases) == 1: return 0
