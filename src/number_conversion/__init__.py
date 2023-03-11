@@ -11,6 +11,6 @@ from .core import (
     number_to_numeral as to_numeral,        # type: ignore
     convert_base as convert_base,
     convert_digits as convert_digits,
-    detect_base as detect_base,
     remove_prefix as remove_prefix,
+    add_prefix as add_prefix
 )
