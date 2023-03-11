@@ -49,74 +49,11 @@ def _add_prefix_single(prefix:str, base:int):
     PREFIX_TO_BASE[prefix] = base
 
 
-
 add_prefix({
     '0b': 2,
     '0o': 8,
     '0x': 16,
 })
-
-
-
-
-# class PrefixMapping:
-#     prefix_to_base: dict[str, int]
-#     base_to_prefix: dict[int, set[str]]
-#     prefixes: list[str]  # sorted by length
-
-#     def __init__(self, prefix_to_base:dict[str,int]|None = None) -> None:
-#         self.prefix_to_base = dict()
-#         self.base_to_prefix = dict()
-#         self.prefixes = []
-
-#         if prefix_to_base is None:
-#             return
-#         self.add(prefix_to_base)
-
-#     @overload
-#     def add(self, prefix:str, base:int, /) -> None: ...
-
-#     @overload
-#     def add(self, dict: dict[str,int], /) -> None: ...
-
-#     def add(self, *args: str|int | dict[str,int]):
-#         if isinstance(args[0], dict):
-#             for prefix, base in args[0].items():
-#                 self.add(prefix, base)
-
-#         elif isinstance(args[0], str) and isinstance(args[1], int):
-#             prefix = args[0]
-#             base = args[1]
-
-#             if prefix in self.prefix_to_base:
-#                 raise ValueError(f"Prefix '{prefix}' already exists")
-            
-#             self.prefixes.append(prefix)
-#             self.prefix_to_base[prefix] = base
-
-#             prefixes = self.base_to_prefix.get(base)
-#             if prefixes is None:
-#                 self.base_to_prefix[base] = set()
-#             self.base_to_prefix[base].add(prefix)
-
-#         else:
-#             raise NotImplementedError()
-        
-#         self.prefixes.sort(key=len, reverse=True)
-        
-    
-
-#     def __str__(self) -> str:
-#         return str(self.prefix_to_base) + "\n" + str(self.base_to_prefix)
-
-
-# base_prefix_map = PrefixMapping({
-#     '0b': 2,
-#     '0o': 8,
-#     '0x': 16,
-#     '0X': 16
-# })
-
 
 
 class Digits:
@@ -263,34 +200,9 @@ def convert_digits(numeral:str, from_digits:Digits|DigitsGroup=ALNUM_ANY, to_dig
     return digitvals_to_numeral(digitvals, to_digits)
 
 
-
-# # tries to detect number system base by looking for prefix
-# # returns base if unambiguously detected, else 0
-# # TODO: maybe make faster by using same prefix detection idea as in numeral_to_digitvals?
-# def detect_base(numeral:str) -> int:
-#     matching_bases = [base for prefix, base in base_prefix_map.prefix_to_base.items() if numeral.startswith(prefix)]
-#     if not len(matching_bases) == 1: return 0
-#     return matching_bases[0]
-
-# # removes prefix if there is any
-# # base can be provided if already known
-# def remove_prefix(numeral:str, base:int=0) -> str:
-#     if not base:
-#         base = detect_base(numeral) 
-#     if base in base_prefix_map.base_to_prefix:
-#         # find matching prefix
-#         for prefix in base_prefix_map.base_to_prefix[base]:
-#             if numeral.startswith(prefix):
-#                 return numeral.removeprefix(prefix)
-#         else:
-#             # could not find numeral prefix for given base
-#             return numeral
-#     else:
-#         # base has no prefix in base_prefix_map
-#         return numeral
-
-
-
+# tries to detect number system base by looking for prefix
+# if unsuccessful, base is 0
+# returns base and numeral without prefix
 def remove_prefix(numeral:str) -> tuple[str, int]:
     # match longest prefix
     prefix = ''
