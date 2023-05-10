@@ -1,7 +1,5 @@
 # number-conversion
 
-*Note: When developing, type checking should be set to `strict`!*
-
 ## Installation
 This package is not currently uploaded to PyPI. Install as follows:
 
