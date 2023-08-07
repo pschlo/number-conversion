@@ -1,41 +1,35 @@
-from typing import overload
+from .digits import AbstractKV
+
 
 
 # PrefixMap objects represent a mapping from numeral prefixes to their bases
-class PrefixMap:
-    prefix_to_base: dict[str,int]
-    prefix_list: list[str]  # sorted by length in descending order
-
+class PrefixMap(AbstractKV):
     def __init__(self, prefix_to_base: dict[str,int]|None = None) -> None:
-        self.prefix_to_base = dict()
-        self.prefix_list = []
-        if prefix_to_base is not None:
-            self.add(prefix_to_base)
+        if prefix_to_base is None:
+            super().__init__(frozenset(), tuple(), dict())
+            return
 
-    @overload
-    def add(self, prefix:str, base:int, /): ...
+        _prefix_to_base: dict[str,int] = dict()
+        _prefixes: set[str] = set()
+        _prefix_lengths: set[int] = set()
 
-    @overload
-    def add(self, dict: dict[str,int], /): ...
+        for prefix, base in prefix_to_base.items():
+            _prefix_to_base[prefix] = base
+            _prefixes.add(prefix)
+            _prefix_lengths.add(len(prefix))
 
-    def add(self, *args:str|int|dict[str,int]):
-        if isinstance(args[0], dict):
-            self._add_prefix_dict(args[0])
-        else:
-            assert isinstance(args[0], str) and isinstance(args[1], int)
-            self._add_prefix_single(args[0], args[1])
-        self.prefix_list.sort(key=len, reverse=True)
+        super().__init__(frozenset(_prefixes), tuple(sorted(_prefix_lengths)), _prefix_to_base)
 
-    def _add_prefix_dict(self, dict: dict[str,int]):
-        for prefix, base in dict.items():
-            self._add_prefix_single(prefix, base)
-
-    def _add_prefix_single(self, prefix:str, base:int):
-        if prefix in self.prefix_to_base:
-            raise ValueError(f"Prefix '{prefix}' already exists")
-        self.prefix_list.append(prefix)
-        self.prefix_to_base[prefix] = base
-
+    def get_base(self, prefix:str) -> int:
+        return self._key_to_value[prefix]
+    
+    @property
+    def prefixes(self):
+        return self._keys
+    
+    @property
+    def prefix_lengths(self):
+        return self._key_lengths
 
 
 DEFAULT_PREFIXES = PrefixMap({

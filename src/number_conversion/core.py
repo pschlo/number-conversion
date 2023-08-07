@@ -42,8 +42,8 @@ def digitvals_to_numeral(digitvals:Sequence[int], digits:Digits=ALNUM_LOWER) -> 
 
     _digits:list[str] = []
     for digitval in digitvals:
-        if digitval >= len(digits.val2digit): raise ValueError(f"Value '{digitval}' cannot be converted to a digit")
-        _digits.append(digits.val2digit[digitval])
+        if digitval > digits.max_value: raise ValueError(f"Value '{digitval}' cannot be converted to a digit")
+        _digits.append(digits.digit_of(digitval))
     return ''.join(_digits)
 
 
@@ -57,24 +57,10 @@ def numeral_to_digitvals(numeral:str, digits_group:Digits|DigitsGroup=ALNUM_ANY)
     digitvals: list[int] = []
     # this is done so that a digit could also be multiple chars wide
     while len(numeral) > 0:
-        # find shortest digit prefix
-        # only take possible prefixes and check if they are digits
-        # runs not more than len(digits) times, because len(digits_lengths) <= len(digits)
-        # runs not more that len(numeral) times, because every iteration i increases by at least one, and i>len(numeral) is checked
-        # NOTE: could also use sentinel digit, but inserting into list is O(n)
-
-        digit = ''
-        is_found = False
-        for i in digits_group.digit_lengths:
-            if i > len(numeral): break
-            digit = numeral[:i]
-            if digit in digits_group.digits:
-                is_found = True
-                break
-        if not is_found:
+        digit = digits_group.find_prefix(numeral)
+        if digit is None:
             raise ValueError(f"Cannot identify digit at beginning of subnumeral '{numeral}'. Are the digits prefix-free and is the numeral valid?")
-
-        digitvals.append(digits_group.value(digit))
+        digitvals.append(digits_group.value_of(digit))
         numeral = numeral.removeprefix(digit)
 
     return tuple(digitvals)
@@ -114,13 +100,8 @@ def convert_digits(numeral:str, from_digits:Digits|DigitsGroup=ALNUM_ANY, to_dig
 # if unsuccessful, base is 0
 # returns base and numeral without prefix
 def remove_prefix(numeral:str, prefixes:PrefixMap=DEFAULT_PREFIXES) -> tuple[str, int]:
-    # match longest prefix
-    prefix = ''
-    for prefix in prefixes.prefix_list:
-        if numeral.startswith(prefix): break
-    else:
+    prefix = prefixes.find_prefix(numeral, reverse=True)
+    if prefix is None:
         return numeral, 0
-    
-    # remove prefix
-    base = prefixes.prefix_to_base[prefix]
+    base = prefixes.get_base(prefix)
     return numeral.removeprefix(prefix), base
